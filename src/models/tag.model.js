@@ -4,7 +4,9 @@ import mongoose from "mongoose";
 const tagSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
+        lowercase: true
     },
     color: {
         type: String,
