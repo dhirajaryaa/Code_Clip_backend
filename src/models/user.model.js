@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
     }],
     snippets: [{
         type: mongoose.Types.ObjectId,
-        ref: "snippet"
+        ref: "Snippet"
     }]
 
 }, { timestamps: true });
