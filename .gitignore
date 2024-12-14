@@ -1,0 +1,14 @@
+#Ignore node_modules
+/node_modules/
+
+#Ignore log files
+logs
+
+#Ignore env file
+.env
+
+#Ignore vscode settings
+.vscode
+
+#Ignore idea settings
+.idea
