@@ -1,13 +1,26 @@
 {
   "name": "code-clip-backend",
   "version": "1.0.0",
-  "main": "index.js",
-  "type":"module",
+  "main": "./src/index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon ./src/index.js"
   },
-  "keywords": ["backend", "nodejs", "express"],
+  "keywords": [
+    "backend",
+    "nodejs",
+    "express"
+  ],
   "author": "Dhiraj Arya",
   "license": "ISC",
-  "description": "Store your code snippet"
+  "description": "Store your code snippet",
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.0"
+  }
 }
