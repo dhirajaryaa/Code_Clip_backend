@@ -1,7 +1,7 @@
 export class ApiError extends Error {
     constructor(
-        message = "Smoothing went wrong!",
         statusCode,
+        message = "Smoothing went wrong!",
         data = null,
         isSuccess = false,
         errors = [],
