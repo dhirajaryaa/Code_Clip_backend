@@ -18,8 +18,11 @@ app.use(express.urlencoded({
 app.use(express.static("./public"));
 
 app.use(cors({
-    origin:process.env.ORIGIN,
-    credentials:true
+    origin: process.env.ORIGIN,
+    credentials: true
 }));
 
+// setup routes 
+import { userRouter } from "./routes/user.routes.js"
 
+app.use("/api/users", userRouter);

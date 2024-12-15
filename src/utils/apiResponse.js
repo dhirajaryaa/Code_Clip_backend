@@ -1,16 +1,16 @@
 export class ApiResponse {
     constructor(
-        message = "success",
-        isSuccess = true,
         statusCode,
         data,
+        message = "success",
+        isSuccess = true,
 
     ) {
-        super(message);
-        this.message = message;
-        this.isSuccess = isSuccess;
+       
         this.statusCode = statusCode;
         this.data = data
+        this.message = message;
+        this.isSuccess = isSuccess;
     }
 
 
