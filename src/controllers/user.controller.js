@@ -199,8 +199,31 @@ const updateUserAvatar = AsyncHandler(async (req, res) => {
     return res.status(200).json(
         new ApiResponse(200, {}, "user Avatar updated")
     )
-}); 
+});
 
+const refreshAccessToken = AsyncHandler(async (req, res) => {
+    if (!req.user._id) {
+        throw new ApiError(404, "Invalid Access")
+    }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(req.user?._id);
+
+    if (!(accessToken && refreshToken)) {
+        throw new ApiError(404, "Invalid credential");
+    };
+
+    return res
+        .status(200)
+        .cookie("accessToken", accessToken, cookieOptions)
+        .cookie("refreshToken", refreshToken, cookieOptions)
+        .json(
+            new ApiResponse(200, {
+                accessToken,
+                refreshToken
+            }, "Access Token Refreshed!")
+        )
+
+});
 
 
 export {
@@ -210,4 +233,5 @@ export {
     updateUserPassword,
     updateUserProfile,
     updateUserAvatar,
+    refreshAccessToken
 }
