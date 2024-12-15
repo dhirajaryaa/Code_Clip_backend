@@ -225,6 +225,26 @@ const refreshAccessToken = AsyncHandler(async (req, res) => {
 
 });
 
+const deleteUserAccount = AsyncHandler(async (req, res) => {
+
+    const user = await User.findById(req.user?._id);
+    if (!user) {
+        throw new ApiError(400, "User Not Found!")
+    };
+
+    const avatar = user.avatar;
+    console.log(avatar);
+    
+
+    await User.findByIdAndDelete(user._id);
+    const result = await removeOnCloudinary(avatar);
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, {}, "User Account Deleted!")
+        )
+});
 
 export {
     registerUser,
@@ -233,5 +253,6 @@ export {
     updateUserPassword,
     updateUserProfile,
     updateUserAvatar,
-    refreshAccessToken
+    refreshAccessToken,
+    deleteUserAccount
 }

@@ -1,8 +1,8 @@
 export class ApiError extends Error {
     constructor(
         statusCode,
-        data = null,
         message = "Smoothing went wrong!",
+        data = null,
         isSuccess = false,
         errors = [],
         stack = [],
@@ -10,8 +10,8 @@ export class ApiError extends Error {
     ) {
         super(message);
         this.statusCode = statusCode;
-        this.data = data;
         this.message = message
+        this.data = data;
         this.isSuccess = isSuccess;
         this.errors = errors
         this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginUser, logoutUser, refreshAccessToken, registerUser, updateUserAvatar, updateUserPassword, updateUserProfile } from "../controllers/user.controller.js";
+import { deleteUserAccount, loginUser, logoutUser, refreshAccessToken, registerUser, updateUserAvatar, updateUserPassword, updateUserProfile } from "../controllers/user.controller.js";
 import { AuthUser } from "../middlewares/auth.middleware.js"
 import { upload } from "../middlewares/multer.middleware.js"
 
@@ -18,9 +18,13 @@ userRouter.route("/register").post(
 userRouter.route("/login").post(loginUser);
 // secure routes with middleware 
 userRouter.route("/logout").post(AuthUser, logoutUser);
+
 userRouter.route("/refresh-token").post(AuthUser, refreshAccessToken);
+
 userRouter.route("/update-profile").put(AuthUser, updateUserProfile);
+
 userRouter.route("/update-password").put(AuthUser, updateUserPassword);
+
 userRouter.route("/update-avatar").put(
     upload.fields([
         {
@@ -29,3 +33,5 @@ userRouter.route("/update-avatar").put(
         }
     ]), AuthUser,
     updateUserAvatar);
+
+userRouter.route("/delete-user").delete(AuthUser, deleteUserAccount);
