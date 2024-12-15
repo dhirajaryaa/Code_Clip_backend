@@ -2,7 +2,7 @@ import { AsyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { User } from "../models/user.model.js";
-import { uploadOnCloudinary } from "../services/cloudinary.services.js"
+import { uploadOnCloudinary, removeOnCloudinary } from "../services/cloudinary.services.js"
 
 const generateAccessAndRefreshToken = async (userId) => {
     if (!userId) {
@@ -132,3 +132,82 @@ const logoutUser = AsyncHandler(async (req, res) => {
             })
         );
 });
+
+const updateUserPassword = AsyncHandler(async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+
+    if (!(oldPassword, newPassword) && !(oldPassword === newPassword)) {
+        throw new ApiError(400, "All  Fields is Required ");
+    };
+    const currentUser = await User.findById(req.user?._id).select("+password");
+
+    const isPasswordMatch = await currentUser.isPasswordCorrect(oldPassword);
+
+    if (!isPasswordMatch) {
+        throw new ApiError(400, "Invalid password");
+    };
+
+    currentUser.password = newPassword;
+
+    await currentUser.save({ validateBeforeSave: false });
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, "Password update successful")
+    )
+
+});
+
+const updateUserProfile = AsyncHandler(async (req, res) => {
+    const { fullName, username } = req.body;
+
+    if (!fullName || !username) {
+        throw new ApiError(400, "All  Fields is Required ");
+    };
+    const updatedUser = await User.findByIdAndUpdate(req.user?._id, {
+        $set: {
+            fullName: fullName || req.user?.fullName,
+            username: username.toLowerCase() || req.user?.username
+        }
+    }, { new: true }).select("-password -refreshToken")
+
+    return res.status(200).json(
+        new ApiResponse(200, updatedUser, "user profile update successful")
+    )
+});
+
+const updateUserAvatar = AsyncHandler(async (req, res) => {
+    const oldAvatarPath = req.user?.avatar;
+    const avatarLocalFilePath = req.files?.avatar[0].path;
+
+    if (!avatarLocalFilePath) {
+        throw new ApiError(400, "Avatar is Required ");
+    };
+
+    const avatar = await uploadOnCloudinary(avatarLocalFilePath);
+    if (!avatar) {
+        throw new ApiError(500, "Failed to upload avatar to Cloudinary.");
+    }
+
+    await removeOnCloudinary(oldAvatarPath);
+
+    await User.findByIdAndUpdate(req.user?._id, {
+        $set: {
+            avatar
+        }
+    }, { new: true });
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, "user Avatar updated")
+    )
+}); 
+
+
+
+export {
+    registerUser,
+    loginUser,
+    logoutUser,
+    updateUserPassword,
+    updateUserProfile,
+    updateUserAvatar,
+}

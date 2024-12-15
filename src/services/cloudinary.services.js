@@ -25,9 +25,7 @@ const removeOnCloudinary = async (filePath) => {
         if (!filePath) {
             console.error("File path empty!");
         };
-        const res = await cloudinary.uploader.destroy(filePath, {
-            resource_type: 'auto'
-        })
+        const res = await cloudinary.uploader.destroy(filePath)
         // return response
         return res
     } catch (error) {
