@@ -22,8 +22,8 @@ const generateAccessAndRefreshToken = async (userId) => {
 };
 
 let cookieOptions = {
-    httpOnly:true,
-    secure:true
+    httpOnly: true,
+    secure: true
 }
 
 const registerUser = AsyncHandler(async (req, res, next) => {
@@ -99,18 +99,40 @@ const loginUser = AsyncHandler(async (req, res, next) => {
 
     return res
         .status(200)
-        .cookie("accessToken", accessToken,cookieOptions)
-        .cookie("refreshToken", refreshToken,cookieOptions)
+        .cookie("accessToken", accessToken, cookieOptions)
+        .cookie("refreshToken", refreshToken, cookieOptions)
         .json(
             new ApiResponse(200, {
-                user:userData,
+                user: userData,
                 accessToken,
                 refreshToken,
             }, "Login Successful")
         )
 });
 
- 
+const logoutUser = AsyncHandler(async (req, res) => {
+
+    await User.findByIdAndUpdate(req.user?._id, {
+        $set: {
+            refreshToken: ""
+        }
+    },
+        {
+            new: true
+        })
 
 
-export { registerUser, loginUser }
+    return res
+        .status(200)
+        .cookie("accessToken", undefined, cookieOptions)
+        .cookie("refreshToken", undefined, cookieOptions)
+        .json(
+            new ApiResponse(200, {
+                accessToken: undefined,
+                refreshToken: undefined,
+            }, "Logout Successful")
+        )
+});
+
+
+export { registerUser, loginUser, logoutUser }

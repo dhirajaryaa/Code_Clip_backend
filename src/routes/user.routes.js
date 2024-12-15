@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { loginUser, registerUser } from "../controllers/user.controller.js";
+import { loginUser, logoutUser, registerUser } from "../controllers/user.controller.js";
+import {AuthUser} from "../middlewares/auth.middleware.js"
 import { upload } from "../middlewares/multer.middleware.js"
 
 export const userRouter = Router();
@@ -15,3 +16,5 @@ userRouter.route("/register").post(
     registerUser);
 
 userRouter.route("/login").post(loginUser);
+// secure routes with middleware 
+userRouter.route("/logout").post(AuthUser,logoutUser);
