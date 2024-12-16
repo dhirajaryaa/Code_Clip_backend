@@ -27,5 +27,8 @@ app.use(cookieParser());
 
 // setup routes 
 import { userRouter } from "./routes/user.routes.js"
-
+import { commentRouter } from "./routes/comment.routes.js";
+// users routes 
 app.use("/api/users", userRouter);
+// comments routes 
+app.use("/api/comments", commentRouter);
