@@ -59,7 +59,10 @@ const registerUser = AsyncHandler(async (req, res, next) => {
         username: username?.toLowerCase(),
         email,
         password,
-        avatar
+        avatar: {
+            url: avatar.url,
+            public_id: avatar.public_id
+        }
     });
 
     const userData = await User.findById(userCollection?._id).select("-password -refreshToken");
@@ -176,7 +179,7 @@ const updateUserProfile = AsyncHandler(async (req, res) => {
 });
 
 const updateUserAvatar = AsyncHandler(async (req, res) => {
-    const oldAvatarPath = req.user?.avatar;
+    const oldAvatarId = req.user?.avatar.public_id;
     const avatarLocalFilePath = req.files?.avatar[0].path;
 
     if (!avatarLocalFilePath) {
@@ -188,11 +191,14 @@ const updateUserAvatar = AsyncHandler(async (req, res) => {
         throw new ApiError(500, "Failed to upload avatar to Cloudinary.");
     }
 
-    await removeOnCloudinary(oldAvatarPath);
+    await removeOnCloudinary(oldAvatarId);
 
     await User.findByIdAndUpdate(req.user?._id, {
         $set: {
-            avatar
+            avatar: {
+                url: avatar.url,
+                public_id: avatar.public_id
+            }
         }
     }, { new: true });
 
@@ -234,10 +240,11 @@ const deleteUserAccount = AsyncHandler(async (req, res) => {
 
     const avatar = user.avatar;
     console.log(avatar);
-    
+
 
     await User.findByIdAndDelete(user._id);
-    const result = await removeOnCloudinary(avatar);
+    await removeOnCloudinary(avatar.public_id);
+    
 
     return res
         .status(200)
